@@ -1,0 +1,43 @@
+---
+title: "titanic_clean"
+author: "Drew Hall"
+date: "July 7, 2018"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+
+library(readxl)
+Copy_of_titanic3_csv <- read_excel("C:/Users/Pinea/OneDrive/Copy of titanic3.csv.xls")
+View(Copy_of_titanic3_csv)
+```
+
+```{r}
+titanic1 <- Copy_of_titanic3_csv
+```
+There were a lot of missing values in the embarked column that were later found to be people from SouthHampton, which is signified with an S. So I replaced the na's with an S!
+
+```{r}
+titanic1 <- titanic1 %>% replace_na(list(embarked = "S"), embarked)
+```
+There were alot of ages missing as well. So, I went ahead and used a mean of all the ages to fill in the ages so it could be plotted better. 
+```{r}
+M <- mean(titanic1$age, na.rm = TRUE)
+titanic1<-titanic1 %>% replace_na(list(age = M), age)
+
+```
+Created a dummy variable for all of the empty boats. 
+```{r}
+titanic1 <- titanic1 %>% replace_na(list(boat = "None"), boat)
+```
+Creating a binary dummy code was needed to help gain insight on who had a room number. This was useful to see who made it off of the boat and who did not. 
+```{r}
+titanic1 <- titanic1 %>% mutate(has_cabin_number = ifelse(is.na(cabin), 0,1))
+```
+
+```{r}
+View(titanic1)
+```
+
